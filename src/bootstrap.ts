@@ -35,34 +35,25 @@ all.Organization.sync({force:true}).then(() => {
                                                 name: "Stanza A",
                                                 museum_id: museum['id']
                                             }).then(room => {
-                                                all.StartEnd.sync({force:true}).then(() => {
-                                                    all.Adjacency.sync({force:true}).then(() =>{
-                                                        all.AttractionM.sync({force:true}).then(() => {
-                                                            all.AttractionM.create({
-                                                                name: "Quadro",
-                                                                room_id: room['id']
-                                                            }).then(attractionM => {
-                                                                sensing.TQueue.sync({force:true}).then(() => {
-                                                                    sensing.TVisit.sync({force:true}).then(() => {
-                                                                        sensing.TMoveRoom.sync({force:true}).then(() => {
-                                                                            sensing.TMoveAttraction.sync({force:true}).then(() => {
-                                                                                sensing.Rating.sync({force:true}).then(() => {
-                                                                                    sensing.Sensing.sync({force:true}).then(() => {
-                                                                                        return;
-                                                                                    });
-                                                                                })
-                                                                            })
-                                                                        })
+                                                all.AttractionM.sync({force:true}).then(() => {
+                                                    all.AttractionM.create({
+                                                        name: "Quadro",
+                                                        room_id: room['id']
+                                                    }).then(attractionM => {
+                                                        sensing.TQueue.sync({force:true}).then(() => {
+                                                            sensing.TVisit.sync({force:true}).then(() => {
+                                                                sensing.TMoveAttraction.sync({force:true}).then(() => {
+                                                                    sensing.Rating.sync({force:true}).then(() => {
+                                                                        sensing.Sensing.sync({force:true}).then(() => {
+                                                                            return;
+                                                                        });
                                                                     })
                                                                 })
                                                             })
                                                         })
                                                     })
                                                 })
-
-
                                             })
-
                                         });
                                     })
                                 });
@@ -73,7 +64,6 @@ all.Organization.sync({force:true}).then(() => {
             })
         })
     })
-}
-);
+});
 
 all.Tourist.sync({force:true});

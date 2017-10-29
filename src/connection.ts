@@ -1,6 +1,6 @@
 import * as Sequelize from 'sequelize';
-
-export const sequelize = new Sequelize('NEPTIS_PLANNER', 'postgres', 'postgres', {
+//NEPTIS_PLANNER for prod code
+export const sequelize = new Sequelize('NEPTIS_TEST', 'postgres', 'postgres', {
   host: 'localhost',
   dialect: 'postgres',
   //logging: false,

@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import * as Sequelize from 'sequelize';
 import {sequelize} from '../connection';
 import {AttractionM, AttractionC} from '../models/models';
-import {TQueue, TVisit, TMoveRoom, TMoveAttraction, Rating, Sensing} from '../models/sensing';
+import {TQueue, TVisit, TMoveAttraction, Rating, Sensing} from '../models/sensing';
 const sensingRouter = express.Router();
 
 sensingRouter.use((req,res,next) => {
@@ -243,27 +243,27 @@ sensingRouter.route('/visit')
     });
 });
 
-sensingRouter.route('/moveRoom')
-.post((req,res) => {
-    let report = req.body;
-    TMoveRoom.findCreateFind({
-        attributes: ['id'],
-        where: report,
-        defaults: report,
-        raw:true
-    }).then(response => {
-        console.log(response);
-        Sensing.create({
-            t_move_room_id: +response[0]['id'],
-        }).then(sensing => {
-            res.status(201).send(sensing);
-        }).catch(err => {
-            res.sendStatus(500);
-        })
-    }).catch(err => {
-        res.sendStatus(500);
-    });
-});
+// sensingRouter.route('/moveRoom')
+// .post((req,res) => {
+//     let report = req.body;
+//     TMoveRoom.findCreateFind({
+//         attributes: ['id'],
+//         where: report,
+//         defaults: report,
+//         raw:true
+//     }).then(response => {
+//         console.log(response);
+//         Sensing.create({
+//             t_move_room_id: +response[0]['id'],
+//         }).then(sensing => {
+//             res.status(201).send(sensing);
+//         }).catch(err => {
+//             res.sendStatus(500);
+//         })
+//     }).catch(err => {
+//         res.sendStatus(500);
+//     });
+// });
 
 sensingRouter.route('/moveAttraction')
 .post((req,res) => {

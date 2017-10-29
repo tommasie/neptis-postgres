@@ -1,7 +1,7 @@
 import {sequelize} from '../connection';
 import * as Sequelize from 'sequelize';
 
-import {AttractionC, AttractionM, Room, Adjacency} from './models';
+import {AttractionC, AttractionM, Room} from './models';
 const options = {
   underscored: true,
   timestamps: false,
@@ -52,19 +52,6 @@ const TMoveAttraction = sequelize.define('t_move_attraction', {
 TMoveAttraction.belongsTo(AttractionC, {foreignKey: 'attraction1'});
 TMoveAttraction.belongsTo(AttractionC, {foreignKey: 'attraction2'});
 
-const TMoveRoom = sequelize.define('t_move_room', {
-  id: {
-    type: Sequelize.BIGINT,
-    autoIncrement: true,
-    primaryKey: true
-  },
-  minutes: {
-    type: Sequelize.INTEGER,
-    allowNull: false
-  }
-}, options);
-TMoveRoom.belongsTo(Adjacency, {foreignKey: 'rooms'});
-
 const Rating = sequelize.define('rating', {
   id: {
     type: Sequelize.BIGINT,
@@ -93,8 +80,6 @@ const Sensing = sequelize.define('sensing', {
 }, options);
 Sensing.belongsTo(TQueue);
 Sensing.belongsTo(TVisit);
-Sensing.belongsTo(TMoveAttraction);
-Sensing.belongsTo(TMoveRoom);
 Sensing.belongsTo(Rating);
 
-export {TQueue, TVisit, TMoveAttraction, TMoveRoom, Rating, Sensing};
+export {TQueue, TVisit, TMoveAttraction, Rating, Sensing};
