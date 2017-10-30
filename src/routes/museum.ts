@@ -13,7 +13,12 @@ museumRouter.use((req,res,next) => {
 
 museumRouter.route('/')
 .get((req,res) => {
-    Museum.findAll()
+    let curatorId = req.query.curator_id;
+    Museum.findAll({
+        where: {
+          curator_id: curatorId
+        }
+    })
     .then((museums) => {
         res.send(museums);
     })
