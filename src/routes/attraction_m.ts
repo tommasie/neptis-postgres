@@ -35,7 +35,7 @@ attractionMRouter.route('/')
 attractionMRouter.route('/museum')
   .get((req,res) => {
     let museumId = req.query.id;
-    let query = "SELECT attraction_m.id, attraction_m.name FROM attraction_m JOIN room on attraction_m.room_id = room.id " +
+    let query = "SELECT attraction_m.id, attraction_m.name, attraction_m.rating FROM attraction_m JOIN room on attraction_m.room_id = room.id " +
       "WHERE room.museum_id = :id";
     sequelize.query(query, { replacements: { id: museumId }, type: sequelize.QueryTypes.SELECT })
       .then(attractions => {

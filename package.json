@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "node src/main",
+    "start": "node dist/main",
     "bootstrap": "node dist/bootstrap",
     "test": "./node_modules/.bin/mocha --compilers ts:ts-node/register ./test/*.spec.ts"
   },

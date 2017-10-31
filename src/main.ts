@@ -1,4 +1,4 @@
-var server = require("../dist/server");
+var server = require("./server");
 var http = require("http");
 
 var app = server.Server.bootstrap().app;

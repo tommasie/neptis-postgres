@@ -243,27 +243,6 @@ sensingRouter.route('/visit')
     });
 });
 
-// sensingRouter.route('/moveRoom')
-// .post((req,res) => {
-//     let report = req.body;
-//     TMoveRoom.findCreateFind({
-//         attributes: ['id'],
-//         where: report,
-//         defaults: report,
-//         raw:true
-//     }).then(response => {
-//         console.log(response);
-//         Sensing.create({
-//             t_move_room_id: +response[0]['id'],
-//         }).then(sensing => {
-//             res.status(201).send(sensing);
-//         }).catch(err => {
-//             res.sendStatus(500);
-//         })
-//     }).catch(err => {
-//         res.sendStatus(500);
-//     });
-// });
 
 sensingRouter.route('/moveAttraction')
 .post((req,res) => {

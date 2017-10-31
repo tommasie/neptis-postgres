@@ -55,9 +55,9 @@ attractionCRouter.route('/')
 
 attractionCRouter.route('/city')
   .get((req,res) => {
-    let city = req.query.name;
+    let city = req.query.city;
     let region = req.query.region;
-    let query = "SELECT attraction_c.id, attraction_c.name FROM attraction_c JOIN curator on attraction_c.curator_id = curator.id " +
+    let query = "SELECT attraction_c.id, attraction_c.name, attraction_c.rating FROM attraction_c JOIN curator on attraction_c.curator_id = curator.id " +
       "JOIN city ON curator.city_id = city.id WHERE city.name = :name AND city.region = :region";
     sequelize.query(query, { replacements: { name: city, region: region }, type: sequelize.QueryTypes.SELECT })
       .then(attractions => {
