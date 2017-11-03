@@ -2,8 +2,6 @@ import * as all from './models/models';
 import * as sensing from './models/sensing';
 import * as CryptoJS from 'crypto-js';
 
-let password = CryptoJS.SHA3('abcde').toString();
-
 all.Organization.sync({force:true}).then(() => {
     all.Organization.create({
         name: "MIBACT"
@@ -16,7 +14,6 @@ all.Organization.sync({force:true}).then(() => {
                 all.Curator.sync({force:true}).then(() => {
                     all.Curator.create({
                         email: "prova@prova.it",
-                        password: password,
                         organization_id: org['id'],
                         city_id: city['id']
                     }).then(curator => {

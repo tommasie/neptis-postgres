@@ -5,8 +5,17 @@ import * as CryptJS from 'crypto-js';
 import {City, Curator} from '../models/models';
 
 const curatorRouter = express.Router();
-curatorRouter.use(function(req,res,next) {
-    next();
+
+curatorRouter.get('/id/:email', (req,res) => {
+    let email = req.params.email;
+    Curator.findOne({
+        where: {email: email}
+    }).then(curator => {
+        res.json(curator['id']);
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send(err);
+    })
 });
 
 curatorRouter.route('/register')
@@ -25,16 +34,13 @@ curatorRouter.route('/register')
         raw: true
     }).then(newCity => {
         let cityId = newCity[0]['id'];
-        console.log(newCity);
         return new Promise(resolve => {
             resolve(cityId);
         });
     }).then(cityId => {
         let email =  req.body.email;
-        let pw = req.body.password;
         let request = {
             email: email,
-            password: pw,
             organization_id: 1,
             city_id: cityId
         };

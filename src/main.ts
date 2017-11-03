@@ -6,4 +6,4 @@ app.set("port", 3200);
 var httpServer = http.createServer(app);
 
 //listen on provided ports
-httpServer.listen(3200);
+httpServer.listen(3200, 'localhost');

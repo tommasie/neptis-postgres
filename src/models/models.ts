@@ -30,10 +30,6 @@ const Curator = sequelize.define('curator', {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true
-    },
-    password: {
-        type: Sequelize.STRING,
-        allowNull: false
     }
 }, options);
 
