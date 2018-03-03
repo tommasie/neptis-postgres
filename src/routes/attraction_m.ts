@@ -9,6 +9,7 @@ attractionMRouter.use((req,res,next) => {
   logger.info(pathName + req.method);
   next();
 });
+
 attractionMRouter.route('/')
   .get((req,res) => {
     AttractionM.findAll()
@@ -69,14 +70,17 @@ attractionMRouter.route('/:id')
       });
   })
   .delete((req,res) => {
-    AttractionM.destroy({where: {id:+req.params.id}})
-      .then(() => {
-        res.sendStatus(200);
-      })
-      .catch((err) => {
+      let img;
+      AttractionM.findById(+req.params.id, {attributes: ['picture'], raw:true})
+      .then(pic => {
+          img = pic;
+          return AttractionM.destroy({where: {id:+req.params.id}});
+      }).then(() => {
+          res.status(200).send(img);
+      }).catch((err) => {
         console.log(err);
         res.send(500);
-      });;
+    });
   });
 
 export {attractionMRouter};

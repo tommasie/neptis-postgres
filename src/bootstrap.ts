@@ -13,7 +13,7 @@ all.Organization.sync({force:true}).then(() => {
             }).then(city => {
                 all.Curator.sync({force:true}).then(() => {
                     all.Curator.create({
-                        email: "prova@prova.it",
+                        email: "collerton.1674085@studenti.uniroma1.it",
                         organization_id: org['id'],
                         city_id: city['id']
                     }).then(curator => {
@@ -24,22 +24,10 @@ all.Organization.sync({force:true}).then(() => {
                                 longitude: 12.177444,
                                 radius: 100,
                                 curator_id: curator['id']
-                            }).then((attractionC => {
+                            }).then(attractionC => {
                                 all.Museum.sync({force:true}).then(() => {
-                                    all.Museum.create({
-                                        name: "Museo",
-                                        curator_id: curator['id']
-                                    }).then(museum => {
                                         all.Room.sync({force:true}).then(() => {
-                                            all.Room.create({
-                                                name: "Stanza A",
-                                                museum_id: museum['id']
-                                            }).then(room => {
                                                 all.AttractionM.sync({force:true}).then(() => {
-                                                    all.AttractionM.create({
-                                                        name: "Quadro",
-                                                        room_id: room['id']
-                                                    }).then(attractionM => {
                                                         sensing.TQueue.sync({force:true}).then(() => {
                                                             sensing.TVisit.sync({force:true}).then(() => {
                                                                 sensing.TMoveAttraction.sync({force:true}).then(() => {
@@ -51,13 +39,10 @@ all.Organization.sync({force:true}).then(() => {
                                                                 })
                                                             })
                                                         })
-                                                    })
                                                 })
-                                            })
                                         });
-                                    })
                                 });
-                            }))
+                            })
                         });
                     })
                 });

@@ -71,6 +71,10 @@ const AttractionC = sequelize.define('attraction_c', {
         type: Sequelize.TEXT,
         allowNull: true,
     },
+    category: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
     latitude: {
         type: Sequelize.DECIMAL(9,6),
         allowNull: false,
@@ -89,7 +93,7 @@ const AttractionC = sequelize.define('attraction_c', {
         defaultValue: 2
     },
     picture: {
-        type: Sequelize.BLOB,
+        type: Sequelize.STRING,
         allowNull: true
     }
 }, options);
@@ -122,6 +126,10 @@ const Room = sequelize.define('room', {
         allowNull: false,
         unique: true
     },
+    starting: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+    }
 }, options);
 
 Museum.hasMany(Room, {foreignKey: {allowNull:false}});
@@ -137,6 +145,10 @@ const AttractionM = sequelize.define('attraction_m', {
         allowNull: false,
         unique: true
     },
+    category: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
     description: {
         type: Sequelize.TEXT,
         allowNull: true,
@@ -147,7 +159,7 @@ const AttractionM = sequelize.define('attraction_m', {
         defaultValue: 2
     },
     picture: {
-        type: Sequelize.BLOB
+        type: Sequelize.STRING
     }
 }, options);
 

@@ -3,6 +3,7 @@ import * as logger from "winston";
 import {sequelize} from '../connection';
 import * as Sequelize from 'sequelize';
 import {Museum, Curator, City, Room, AttractionM} from '../models/models';
+const neo4j = require('neo4j-driver').v1;
 
 const museumRouter = express.Router();
 museumRouter.use((req,res,next) => {
@@ -29,16 +30,30 @@ museumRouter.route('/')
 })
 .post((req,res) => {
     console.log(req.body);
-    Museum.create(req.body,
+    Museum.create(req.body/*,
         {
             include: [
                 { model: Room,
                     include: [AttractionM]
                 }
             ]
-        }
+        }*/
     )
-    .then((museum) => {
+    .then(museum =>
+    {
+        const driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'emaldyst'));
+        const session = driver.session();
+        let create = "CREATE (:Museum {id:" + museum['id'] +"})";
+        session.run(create)
+        .then(result => {
+            res.status(201).send(museum);
+        })
+        .catch(err => {
+            console.log(err);
+            res.sendStatus(500);
+        });
+
+    })/*{
         Room.findOne({
             where: {
                 name: req.body.start,
@@ -66,7 +81,7 @@ museumRouter.route('/')
                 })
             })
         })
-    })
+    })*/
     .catch((err) => {
         console.log(err);
         res.send(500);
@@ -141,8 +156,6 @@ museumRouter.route('/:id')
         res.send(500);
     });
 });
-
-//museumRouter.route('/planning/:')
 
 
 export {museumRouter};
