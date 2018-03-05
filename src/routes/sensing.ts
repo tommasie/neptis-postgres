@@ -14,8 +14,9 @@ sensingRouter.use((req,res,next) => {
 sensingRouter.route('/city/:id')
 .get((req,res) => {
     let values: Map<number, number> = new Map<number, number>();
+    let times: Map< number, number> = new Map<number, number>();
     let cityId = +req.params.id;
-    let time = moment().subtract(1,'h').format('YYYY-MM-DD hh:mm:ss');
+    let time = moment().subtract(1,'d').format('YYYY-MM-DD hh:mm:ss');
     time += "+02";
     let query = "SELECT avg(t_queue.minutes), attraction_c.id as id FROM sensing, t_queue, attraction_c, curator " +
     "WHERE sensing.ts >= :ts AND sensing.t_queue_id = t_queue.id AND t_queue.attraction_c_id = attraction_c.id AND attraction_c.curator_id = curator.id " +
@@ -47,6 +48,7 @@ sensingRouter.route('/city/:id')
                 temp = 0;
                 temp += Math.round(att.avg);
                 values.set(id, temp);
+                times.set(id,temp);
             }
             console.log(values);
             let query = "SELECT attraction_c.rating as rating, attraction_c.id as id FROM attraction_c, curator " +
@@ -82,7 +84,12 @@ sensingRouter.route('/city/:id')
                 for (let [k,v] of values) {
                     obj[k] = v;
                 }
-                res.send(obj);
+                let t = Object.create(null);
+                console.log(times);
+                for(let [k,v] of times) {
+                    t[k] = v;
+                }
+                res.send({values:obj,times:t});
             })
 
             .catch(err => {

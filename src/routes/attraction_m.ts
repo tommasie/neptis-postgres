@@ -47,6 +47,22 @@ attractionMRouter.route('/museum')
       })
   });
 
+  attractionMRouter.route('/city')
+    .get((req,res) => {
+      let city = req.query.city;
+      let region = req.query.region;
+      let query = "SELECT attraction_m.id, attraction_m.name FROM attraction_m JOIN room on attraction_m.room_id = room.id " +
+        "JOIN museum ON room.museum_id = museum.id JOIN curator ON museum.curator_id = curator.id JOIN city ON curator.city_id = city.id " +
+        "WHERE city.name = :name AND city.region = :region";
+      sequelize.query(query, { replacements: { name: city, region: region }, type: sequelize.QueryTypes.SELECT })
+        .then(attractions => {
+          res.status(200).send(attractions);
+        })
+        .catch(err => {
+          res.sendStatus(500);
+        })
+    });
+
 attractionMRouter.route('/:id')
   .get((req,res) => {
     let id = +req.params.id;
