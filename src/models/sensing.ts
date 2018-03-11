@@ -58,7 +58,7 @@ const Rating = sequelize.define('rating', {
     autoIncrement: true,
     primaryKey: true
   },
-  rating: {
+  value: {
     type: Sequelize.INTEGER,
     allowNull: false
   }

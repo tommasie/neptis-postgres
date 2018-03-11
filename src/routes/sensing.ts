@@ -16,7 +16,7 @@ sensingRouter.route('/city/:id')
     let values: Map<number, number> = new Map<number, number>();
     let times: Map< number, number> = new Map<number, number>();
     let cityId = +req.params.id;
-    let time = moment().subtract(1,'d').format('YYYY-MM-DD hh:mm:ss');
+    let time = moment().subtract(1,'M').format('YYYY-MM-DD hh:mm:ss');
     time += "+02";
     let query = "SELECT avg(t_queue.minutes), attraction_c.id as id FROM sensing, t_queue, attraction_c, curator " +
     "WHERE sensing.ts >= :ts AND sensing.t_queue_id = t_queue.id AND t_queue.attraction_c_id = attraction_c.id AND attraction_c.curator_id = curator.id " +
@@ -51,8 +51,9 @@ sensingRouter.route('/city/:id')
                 times.set(id,temp);
             }
             console.log(values);
-            let query = "SELECT attraction_c.rating as rating, attraction_c.id as id FROM attraction_c, curator " +
-            "WHERE attraction_c.curator_id = curator.id AND curator.city_id = :cityId";
+            let query = "SELECT avg(rating.value), attraction_c.id as id FROM sensing, rating, attraction_c, curator " +
+            "WHERE sensing.ts >= :ts AND sensing.rating_id = rating.id AND rating.attraction_c_id = attraction_c.id AND attraction_c.curator_id = curator.id " +
+            "AND curator.city_id = :cityId GROUP BY attraction_c.id ORDER BY attraction_c.id";
             sequelize.query(query, {
                 replacements: {cityId: cityId, ts: time},
                 type: sequelize.QueryTypes.SELECT
@@ -142,8 +143,9 @@ sensingRouter.route('/museum/:id')
                 times.set(id,temp);
             }
             console.log(values);
-            let query = "SELECT attraction_m.rating as rating, attraction_m.id as id FROM attraction_m, room " +
-            "WHERE attraction_m.room_id = room.id AND room.museum_id = :museumId";
+            let query = "SELECT avg(rating.value), attraction_m.id as id FROM sensing, rating, attraction_m, room " +
+            "WHERE sensing.ts >= :ts AND sensing.rating_id = rating.id AND rating.attraction_m_id = attraction_m.id AND attraction_m.room_id = room.id " +
+            "AND room.museum_id = :museumId GROUP BY attraction_m.id ORDER BY attraction_m.id";
             sequelize.query(query, {
                 replacements: {museumId: museumId, ts: time},
                 type: sequelize.QueryTypes.SELECT
