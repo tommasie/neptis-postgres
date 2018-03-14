@@ -1,10 +1,10 @@
-import {sequelize} from '../connection';
 import * as Sequelize from 'sequelize';
+import { sequelize } from '../connection';
 
 const options = {
     underscored: true,
     timestamps: false,
-    freezeTableName: true
+    freezeTableName: true,
 };
 
 const Organization = sequelize.define('organization', {
@@ -16,8 +16,8 @@ const Organization = sequelize.define('organization', {
     name: {
         type: Sequelize.STRING,
         unique: true,
-        allowNull: false
-    }
+        allowNull: false,
+    },
 }, options);
 
 const Curator = sequelize.define('curator', {
@@ -29,11 +29,11 @@ const Curator = sequelize.define('curator', {
     email: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
-    }
+        unique: true,
+    },
 }, options);
 
-Curator.belongsTo(Organization, {foreignKey: {allowNull:false}});
+Curator.belongsTo(Organization, { foreignKey: { allowNull: false } });
 
 const City = sequelize.define('city', {
     id: {
@@ -44,17 +44,17 @@ const City = sequelize.define('city', {
     name: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: 'uniqueCity'
+        unique: 'uniqueCity',
     },
     region: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: 'uniqueCity'
+        unique: 'uniqueCity',
     },
 }, options);
 
-Curator.belongsTo(City, {foreignKey: {allowNull:false}});
-City.hasMany(Curator, {foreignKey: {allowNull:false}})
+Curator.belongsTo(City, { foreignKey: { allowNull: false } });
+City.hasMany(Curator, { foreignKey: { allowNull: false } });
 
 const AttractionC = sequelize.define('attraction_c', {
     id: {
@@ -65,7 +65,7 @@ const AttractionC = sequelize.define('attraction_c', {
     name: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+        unique: 'nameUnique',
     },
     description: {
         type: Sequelize.TEXT,
@@ -73,14 +73,14 @@ const AttractionC = sequelize.define('attraction_c', {
     },
     category: {
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: true,
     },
     latitude: {
-        type: Sequelize.DECIMAL(9,6),
+        type: Sequelize.DECIMAL(9, 6),
         allowNull: false,
     },
     longitude: {
-        type: Sequelize.DECIMAL(9,6),
+        type: Sequelize.DECIMAL(9, 6),
         allowNull: false,
     },
     radius: {
@@ -90,15 +90,21 @@ const AttractionC = sequelize.define('attraction_c', {
     rating: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: 2
+        defaultValue: 2,
     },
     picture: {
         type: Sequelize.STRING,
-        allowNull: true
-    }
+        allowNull: true,
+    },
+
+    curator_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        unique: 'nameUnique',
+    },
 }, options);
 
-Curator.hasMany(AttractionC, {foreignKey: {allowNull:false}});
+Curator.hasMany(AttractionC, { foreignKey: 'curator_id' });
 
 const Museum = sequelize.define('museum', {
     id: {
@@ -109,11 +115,16 @@ const Museum = sequelize.define('museum', {
     name: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+        unique: 'museumNameUnique',
+    },
+    curator_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        unique: 'museumNameUnique',
     },
 }, options);
 
-Curator.hasMany(Museum, {foreignKey: {allowNull:false}});
+Curator.hasMany(Museum, { foreignKey: 'curator_id' });
 
 const Room = sequelize.define('room', {
     id: {
@@ -124,15 +135,20 @@ const Room = sequelize.define('room', {
     name: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+        unique: 'roomNameUnique',
     },
     starting: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
-    }
+    },
+    museum_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        unique: 'roomNameUnique',
+    },
 }, options);
 
-Museum.hasMany(Room, {foreignKey: {allowNull:false}});
+Museum.hasMany(Room, { foreignKey: 'museum_id' });
 
 const AttractionM = sequelize.define('attraction_m', {
     id: {
@@ -143,11 +159,11 @@ const AttractionM = sequelize.define('attraction_m', {
     name: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+        unique: 'attrMNameUnique',
     },
     category: {
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: true,
     },
     description: {
         type: Sequelize.TEXT,
@@ -156,14 +172,19 @@ const AttractionM = sequelize.define('attraction_m', {
     rating: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: 2
+        defaultValue: 2,
     },
     picture: {
-        type: Sequelize.STRING
-    }
+        type: Sequelize.STRING,
+    },
+    room_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        unique: 'attrMNameUnique',
+    },
 }, options);
 
-Room.hasMany(AttractionM, {foreignKey: {allowNull:false}});
+Room.hasMany(AttractionM, { foreignKey: 'room_id' });
 
 const Tourist = sequelize.define('tourist', {
     id: {
@@ -174,12 +195,12 @@ const Tourist = sequelize.define('tourist', {
     email: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+        unique: true,
     },
     password: {
         type: Sequelize.STRING,
-        allowNull: false
-    }
-},options);
+        allowNull: false,
+    },
+}, options);
 
-export {Organization, Curator, Tourist, City, AttractionC, Museum, Room, AttractionM};
+export { Organization, Curator, Tourist, City, AttractionC, Museum, Room, AttractionM };

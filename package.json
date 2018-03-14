@@ -21,6 +21,7 @@
     "@types/request": "^2.47.0",
     "@types/sequelize": "^4.27.7",
     "@types/winston": "^2.3.8",
+    "async": "^2.6.0",
     "body-parser": "^1.18.2",
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",

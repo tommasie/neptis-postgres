@@ -1,66 +1,66 @@
-import * as express from "express";
-import * as logger from "winston";
+import * as express from 'express';
+import { logger } from '../config/logger';
 
-import {City} from '../models/models';
+import { City } from '../facade/models';
 
 const cityRouter = express.Router();
-cityRouter.use((req,res,next) => {
+cityRouter.use((req, res, next) => {
   next();
 });
 
 cityRouter.route('/')
-  .get((req,res) => {
-    City.findAll({raw: true,})
+  .get((req, res) => {
+    City.findAll({ raw: true })
       .then((attractions) => {
         res.send(attractions);
       })
       .catch((err) => {
-        console.log(err);
+        logger.error(err);
         res.sendStatus(500);
       });
   })
-  .post((req,res) => {
+  .post((req, res) => {
     City.create(req.body)
       .then((attraction) => {
         res.status(201).json(attraction);
       })
       .catch((err) => {
-        console.log(err);
+        logger.error(err);
         res.sendStatus(500);
       });
   });
 
 cityRouter.route('/:id')
-  .get((req,res) => {
-    let id = +req.params.id;
+  .get((req, res) => {
+    const id = +req.params.id;
     City.findById(id)
-    .then((attraction) => {
-      res.send(attraction);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
-    });
+      .then((attraction) => {
+        res.send(attraction);
+      })
+      .catch((err) => {
+        logger.error(err);
+        res.sendStatus(500);
+      });
   })
-  .put((req,res) => {
-    City.update(req.body, {where: {id: +req.params.id}})
+  .put((req, res) => {
+    City.update(req.body, { where: { id: +req.params.id } })
       .then((attraction) => {
         res.sendStatus(204);
       })
       .catch((err) => {
-        console.log(err);
+        logger.error(err);
         res.sendStatus(500);
       });
   })
-  .delete((req,res) => {
-    City.destroy({where: {id:+req.params.id}})
+  .delete((req, res) => {
+    City.destroy({ where: { id: +req.params.id } })
       .then(() => {
         res.sendStatus(204);
       })
       .catch((err) => {
-        console.log(err);
+        logger.error(err);
         res.sendStatus(500);
-      });;
+      });
   });
 
-export {cityRouter};
+export { cityRouter };
