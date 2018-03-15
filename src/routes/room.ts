@@ -3,7 +3,7 @@ import * as express from 'express';
 import * as Sequelize from 'sequelize';
 import { logger } from '../config/logger';
 const neo4j = require('neo4j-driver').v1;
-import { sequelize } from '../connection';
+import { neo4jDriver, sequelize } from '../connection';
 import { Room } from '../facade/models';
 
 const roomRouter = express.Router();
@@ -13,8 +13,7 @@ const roomRouter = express.Router();
 
 roomRouter.route('/adjacency')
     .post((req, res) => {
-        const driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'emaldyst'));
-        const session = driver.session();
+        const session = neo4jDriver.session();
         const s = neo4j.int(req.body.source);
         const d = neo4j.int(req.body.destination);
         const museum = neo4j.int(req.body.museum_id);
@@ -23,20 +22,17 @@ roomRouter.route('/adjacency')
         session.run(rel)
             .then(result => {
                 session.close();
-                driver.close();
                 res.sendStatus(201);
             })
             .catch(err => {
                 logger.error(err);
                 session.close();
-                driver.close();
                 res.sendStatus(500);
             });
     });
 
 roomRouter.delete('/adjacency/:from/:to', (req, res) => {
-    const driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'emaldyst'));
-    const session = driver.session();
+    const session = neo4jDriver.session();
     const s = neo4j.int(req.params.from);
     const d = neo4j.int(req.params.to);
     const rel = 'MATCH (a:Room)-[r:NEXT]->(b:Room) WHERE a.id =' + s +
@@ -44,13 +40,11 @@ roomRouter.delete('/adjacency/:from/:to', (req, res) => {
     session.run(rel)
         .then(result => {
             session.close();
-            driver.close();
             res.sendStatus(200);
         })
         .catch(err => {
             logger.error(err);
             session.close();
-            driver.close();
             res.sendStatus(500);
         });
 });
@@ -69,8 +63,7 @@ roomRouter.route('/:museum_id')
         })
         .post((req, res) => {
             logger.info(req.body);
-            const driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'emaldyst'));
-            const session = driver.session();
+            const session = neo4jDriver.session();
             const museumId = neo4j.int(req.body.museum_id);
             Room.create(req.body).then((room: IRoom) => {
                 const create = 'CREATE (:Room {id:' + neo4j.int(room.id) + ', museum:' + museumId + '})';
@@ -80,7 +73,6 @@ roomRouter.route('/:museum_id')
                             const q = 'MATCH (a:Museum), (b:Room) WHERE a.id =' + museumId + ' AND b.id =' + neo4j.int(room.id) + ' CREATE (a)-[:START]->(b)';
                             session.run(q).then((r) => {
                                 session.close();
-                                driver.close();
                                 res.status(201).send(room);
                             }).catch((err) => {
                                 logger.error(err);
@@ -88,7 +80,6 @@ roomRouter.route('/:museum_id')
                             });
                         } else {
                             session.close();
-                            driver.close();
                             res.status(201).send(room);
                         }
 
@@ -96,7 +87,6 @@ roomRouter.route('/:museum_id')
                     .catch((err) => {
                         logger.error(err);
                         session.close();
-                        driver.close();
                         res.sendStatus(500);
                     });
 

@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as Sequelize from 'sequelize';
 import { logger } from '../config/logger';
-import { sequelize } from '../connection';
+import { neo4jDriver, sequelize } from '../connection';
 import { AttractionM, City, Curator, Museum, Room } from '../facade/models';
 const neo4j = require('neo4j-driver').v1;
 
@@ -32,9 +32,8 @@ museumRouter.route('/')
         logger.debug(req.body);
         Museum.create(req.body)
             .then((museum: IMuseum) => {
-                const driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'emaldyst'));
-                const session = driver.session();
-                const create = 'CREATE (:Museum {id:' + museum.id + '})';
+                const session = neo4jDriver.session();
+                const create = `CREATE (:Museum {id: ${museum.id} })`;
                 session.run(create)
                     .then((result) => {
                         res.status(201).send(museum);
@@ -94,14 +93,13 @@ museumRouter.route('/:id')
             // raw: true,
         })
             .then((museum: any) => {
-                const driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'emaldyst'));
-                const session = driver.session();
+                const session = neo4jDriver.session();
                 const adjList = {};
                 const response = {
                     adjacencies: {},
                     start: 0,
                 };
-                session.run('MATCH (a)-[:NEXT]->(b) WHERE a.museum =' + id + ' RETURN a,b')
+                session.run(`MATCH (a)-[:NEXT]->(b) WHERE a.museum = ${id} RETURN a,b`)
                     .then((links) => {
                         links.records.forEach((record) => {
                             const id1 = record.get('a').properties.id.toNumber();
@@ -163,8 +161,7 @@ museumRouter.route('/:id')
         const id = +req.params.id;
         Museum.destroy({ where: { id } })
             .then(() => {
-                const driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', 'emaldyst'));
-                const session = driver.session();
+                const session = neo4jDriver.session();
                 const roomId = neo4j.int(id);
                 let rel = 'MATCH (r:Room {museum:' + id + '}) DETACH DELETE r';
                 session.run(rel)
@@ -174,14 +171,12 @@ museumRouter.route('/:id')
                         session.run(rel).then(r => {
                             logger.debug(result);
                             session.close();
-                            driver.close();
                             res.sendStatus(200);
                         });
                     })
                     .catch(err => {
                         logger.error(err);
                         session.close();
-                        driver.close();
                         res.sendStatus(500);
                     });
             })

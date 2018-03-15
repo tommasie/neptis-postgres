@@ -3,6 +3,7 @@ import * as express from 'express';
 import { logger } from '../config/logger';
 
 import { City, Curator } from '../facade/models';
+import { ICurator } from '../model/model';
 
 const curatorRouter = express.Router();
 
@@ -10,7 +11,7 @@ curatorRouter.get('/id/:email', (req, res) => {
     const email = req.params.email;
     Curator.findOne({
         where: { email },
-    }).then((curator: any) => {
+    }).then((curator: ICurator) => {
         res.json(curator.id);
     }).catch(err => {
         logger.error(err);

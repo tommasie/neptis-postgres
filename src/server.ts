@@ -1,5 +1,6 @@
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
+import * as ipfilter from 'express-ipfilter';
 import * as morgan from 'morgan';
 import * as path from 'path';
 import {logger} from './config/logger';
@@ -46,6 +47,18 @@ export class Server {
     this.app.use(bodyParser.urlencoded({
       extended: true,
     }));
+
+    // Only allow localhost calls
+    this.app.use(ipfilter.IpFilter(['127.0.0.1'], {mode: 'allow'}));
+
+    this.app.use((err, req, res, next) => {
+      logger.debug('Error handler', err);
+      if (err instanceof ipfilter.IpDeniedError) {
+        res.status(401).end();
+      } else {
+        res.status(err.status || 500).end();
+      }
+    });
   }
 
   public routes() {
