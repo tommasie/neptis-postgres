@@ -15,47 +15,46 @@ curatorRouter.get('/id/:email', (req, res) => {
         res.json(curator.id);
     }).catch(err => {
         logger.error(err);
-        res.status(500).send(err);
+        res.status(404).send(err);
     });
 });
 
-curatorRouter.route('/register')
-    .post((req, res) => {
-        const city = req.body.city;
-        const region = req.body.region;
-        City.findCreateFind({
-            where: {
-                name: city,
-                region,
-            },
-            defaults: {
-                name: city,
-                region,
-            },
-            raw: true,
-        }).then((newCity: any[]) => {
-            const cityId = newCity[0].id;
-            return new Promise(resolve => {
-                resolve(cityId);
-            });
-        }).then(cityId => {
-            const email = req.body.email;
-            const request = {
-                email,
-                organization_id: 1,
-                city_id: cityId,
-            };
-            Curator.create(request)
-                .then((curator) => {
-                    res.status(201).send(curator);
-                })
-                .catch((err) => {
-                    logger.error(err);
-                    res.sendStatus(500);
-                });
+curatorRouter.post('/register', (req, res) => {
+    const city = req.body.city;
+    const region = req.body.region;
+    logger.debug(city, region);
+    City.findCreateFind({
+        where: {
+            name: city,
+            region,
+        },
+        defaults: {
+            name: city,
+            region,
+        },
+        raw: true,
+    }).then((newCity: any[]) => {
+        const cityId = newCity[0].id;
+        return new Promise(resolve => {
+            resolve(cityId);
         });
-
+    }).then(cityId => {
+        const email = req.body.email;
+        const request = {
+            email,
+            organization_id: 1,
+            city_id: cityId,
+        };
+        Curator.create(request)
+            .then((curator) => {
+                res.status(201).send(curator);
+            })
+            .catch((err) => {
+                logger.error(err);
+                res.sendStatus(500);
+            });
     });
+});
 
 curatorRouter.route('/auth')
     .post((req, res) => {

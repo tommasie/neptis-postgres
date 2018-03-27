@@ -7,15 +7,15 @@ const postgresUser = config.get('postgresUser');
 const postgresPass = config.get('postgresPass');
 
 export const sequelize = new Sequelize(postgresDB, postgresUser, postgresPass, {
-  host: 'localhost',
-  dialect: 'postgres',
-  operatorsAliases: false,
-  logging: false,
-  pool: {
-    max: 5,
-    min: 0,
-    idle: 10000,
-  },
+	host: 'localhost',
+	dialect: 'postgres',
+	operatorsAliases: false,
+	logging: false,
+	pool: {
+		max: 5,
+		min: 0,
+		idle: 10000,
+	},
 });
 
 const neo4jDB = config.get('neo4JDB');

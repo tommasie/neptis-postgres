@@ -31,7 +31,10 @@ const Curator = sequelize.define('curator', {
         allowNull: false,
         unique: true,
     },
-}, options);
+}, {
+    ...options,
+    ...{indexes: [{unique: true, fields: ['email']}]},
+});
 
 Curator.belongsTo(Organization, { foreignKey: { allowNull: false } });
 
