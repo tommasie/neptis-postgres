@@ -2,6 +2,7 @@ import * as express from 'express';
 import { logger } from '../config/logger';
 import { sequelize } from '../connection';
 import { AttractionM } from '../facade/models';
+import { TQueue, TVisit, Rating, Sensing } from '../facade/sensing';
 
 const attractionMRouter = express.Router();
 attractionMRouter.use((req, res, next) => {
@@ -25,7 +26,10 @@ attractionMRouter.route('/')
 		logger.info(req.body);
 		AttractionM.create(req.body)
 			.then((attraction) => {
-				res.send(attraction);
+				let report = {attraction_m_id: attraction['id'], minutes: 2};
+				let rating = {attraction_m_id: attraction['id'], value: 2};
+				sendSensing(report,rating, res, attraction);
+				//res.send(attraction);
 			})
 			.catch((err) => {
 				logger.error(err);
@@ -99,4 +103,47 @@ attractionMRouter.route('/:id')
 			});
 	});
 
+	function sendSensing(report: object, rating: object, res, attraction): void {
+		TQueue.findCreateFind({
+			attributes: ['id'],
+			where: report,
+			defaults: report,
+			raw: true,
+		}).then((response: any[]) => {
+			logger.info('Response', response);
+			return Sensing.create({
+					t_queue_id: +response[0].id,
+			});
+		}).then(sensing => {
+			TVisit.findCreateFind({
+				attributes: ['id'],
+				where: report,
+				defaults: report,
+				raw: true,
+		}).then((response: any[]) => {
+				logger.info(response.toString());
+				return Sensing.create({
+						t_visit_id: +response[0].id,
+				})
+		}).then(sensing => {
+			
+			Rating.findCreateFind({
+				attributes: ['id'],
+				where: rating,
+				defaults: rating,
+				raw: true,
+			}).then((response: any[]) => {
+				logger.info(response.toString());
+				return Sensing.create({
+					rating_id: +response[0].id,
+				})
+			}).then(sensing => {
+				res.status(201).send(attraction);
+				})
+			})
+		}).catch(err => {
+			logger.error(err);
+			res.sendStatus(500);
+		});
+	}
 export { attractionMRouter };

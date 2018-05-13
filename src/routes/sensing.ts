@@ -110,7 +110,7 @@ sensingRouter.route('/museum/:id')
 const values: Map<number, number> = new Map<number, number>();
 const times: Map<number, number> = new Map<number, number>();
 const museumId = +req.params.id;
-let time = moment().subtract(1, 'd').format('YYYY-MM-DD hh:mm:ss');
+let time = moment().subtract(1, 'M').format('YYYY-MM-DD hh:mm:ss');
 time += '+02';
 const queueQuery = 'SELECT avg(t_queue.minutes), attraction_m.id as id FROM sensing, t_queue, attraction_m, room ' +
 		'WHERE sensing.ts >= :ts AND sensing.t_queue_id = t_queue.id AND t_queue.attraction_m_id = attraction_m.id AND attraction_m.room_id = room.id ' +
@@ -159,13 +159,17 @@ sequelize.query(queueQuery, {
 														let multiplier: number;
 														switch (att.rating) {
 																case 1:
-																		multiplier = 3;
+																		multiplier = 5;
 																		break;
 																case 2:
-																		multiplier = 2;
+																		multiplier = 4;
 																		break;
 																case 3:
-																		multiplier = 1;
+																		multiplier = 3
+																		break;
+																case 4: multiplier = 2;
+																		break;
+																case 5: multiplier = 1;
 														}
 														const id = att.id;
 														let temp = values.get(id);
