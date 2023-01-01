@@ -45,7 +45,7 @@
     "@types/chai": "^4.2.0",
     "@types/chai-http": "^3.0.5",
     "@types/mocha": "^2.2.48",
-    "config": "^1.31.0",
+    "config": "^3.3.8",
     "gulp": "^4.0.2",
     "gulp-typedoc": "^2.2.0",
     "neo4j-driver": "^1.7.5",
