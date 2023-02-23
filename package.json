@@ -37,7 +37,7 @@
     "pg-hstore": "^2.3.3",
     "portscanner": "^2.2.0",
     "request": "^2.88.0",
-    "sequelize": "^6.0.0",
+    "sequelize": "^6.28.2",
     "typescript": "^2.9.2",
     "winston": "^2.4.4"
   },
